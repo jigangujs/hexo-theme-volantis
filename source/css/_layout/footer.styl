@@ -1,42 +1,29 @@
-footer
+footer.footer
   position: relative
   padding: 40px 10px 120px 10px
   width: 100%
-  color: $color-meta
+  color: var(--color-site-footer)
   margin: 0px auto
   &,p
     font-size: $fontsize-code
   overflow: hidden
   text-align: center
-  &.white, &.white a
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1)
-
-  &.white
-    color: fade(white, 50%)
-
-  &.white a
-    color: fade(white, 80%)
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1)
-
   .licenses
     color: fade(@color_text_main, 50%)
-    text-decoration: underline
-
-  .codename
-    text-decoration: underline
-
   .social-wrapper
     display: flex
     justify-content: center
     flex-wrap: wrap
     margin: 4px $gap * 0.5
-    font-size: $fontsize
 
   a
-    color: $color-meta
+    color: var(--color-site-footer)
     padding: 0
     trans()
-
+    &:hover
+      color: $color-hover
+    &:not(.social):hover
+      text-decoration: underline
     &.social
       position: relative
       display: inline-block
@@ -44,19 +31,25 @@ footer
       display: flex
       justify-content: center
       align-items: center
-      width: 32px
-      height: 32px
+      min-width: 36px
+      min-height: 36px
       margin: 4px
-      border-radius: 100px
+      opacity: .75
+      border-radius: 4px
+      font-size: 1rem
+      img
+        margin: 8px
+        height: 24px
       &:hover
-        background: bgcolor($color-theme)
-        color: $color-theme
+        color: $color-hover
+        background: alpha(@color, 0.1)
 
 
 
   .copyright
     margin-top: $gap
-    font-size: $fontsize-footnote
+    p
+      font-size: $fontsize-footnote
 
   @media screen and (max-width: $device-tablet)
     justify-content: center

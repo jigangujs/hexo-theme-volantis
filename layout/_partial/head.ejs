@@ -1,4 +1,4 @@
-<head hexo-theme='https://volantis.js.org/#<%- theme.info.version %>'>
+<head hexo-theme='https://github.com/volantis-x/hexo-theme-volantis/tree/<%- theme.info.theme_version %>'>
   <meta charset="utf-8">
   <!-- SEO相关 -->
   <% if (page.robots) { %>
@@ -19,16 +19,24 @@
     <% } %>
   <% } %>
   <!-- 渲染优化 -->
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <meta name="renderer" content="webkit">
   <meta name="force-rendering" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
   <meta name="HandheldFriendly" content="True" >
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <% if (theme.use_cdn && theme.info.cdn && theme.info.cdn.css.first) { %>
+  <link rel="preload" href="<%- theme.info.cdn.css.first %>" as="style">
+  <% } else { %>
+  <link rel="preload" href="<%- url_for("/css/first.css") %>" as="style">
+  <% } %>
 
   <!-- 页面元数据 -->
   <%
-    var title = page.seotitle || page.title;
+    var title = page.seo_title || page.title;
     var keywords = page.keywords || '';
     var description = page.description || '';
     if (is_archive()) {
@@ -45,6 +53,13 @@
     } else if (is_home() && page.prev == 0) {
       keywords = config.keywords || '';
       description = config.description || '';
+    } else {
+      if ((page.layout == 'docs') && page.group && (page.group in theme.sidebar.widget_library)) {
+        let widget = theme.sidebar.widget_library[page.group];
+        if ((widget.class == 'group') && widget.seo_title) {
+          title = widget.seo_title + ": " + title;
+        }
+      }
     }
     if (theme.seo && theme.seo.use_tags_as_keywords) {
       if (!keywords && page.tags && page.tags.length > 0) {
@@ -62,10 +77,11 @@
       }
     }
   %>
-    <title><% if (title) { %><%= title %> - <% } %><%= config.title %></title>
+  <title><% if (title) { %><%= title %> - <% } %><%= config.title %></title>
   <% if (keywords){ %>
     <meta name="keywords" content="<%- keywords %>">
   <% } %>
+
   <% if (description){ %>
     <meta name="description" content="<%- description %>">
   <% } %>
@@ -83,20 +99,8 @@
   <% } %>
 
   <!-- link -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css">
-  <% if (theme.plugins.fancybox && theme.plugins.fancybox.css) { %>
-    <%- css(theme.plugins.fancybox.css) %>
-  <% } %>
-  <% if (theme.plugins.nodewaves && theme.plugins.nodewaves.css) { %>
-    <%- css(theme.plugins.nodewaves.css) %>
-  <% } %>
-
   <% if (config.favicon) { %>
-  <link rel="shortcut icon" type='image/x-icon' href="<%- url_for(config.favicon) %>">
-  <% } %>
-
-  <% if (theme.plugins.aplayer.enable) { %>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+    <link rel="shortcut icon" type='image/x-icon' href="<%- url_for(config.favicon) %>">
   <% } %>
 
   <!-- import link -->
@@ -105,38 +109,21 @@
   <%- item %><% }) %>
   <% } %>
 
-  <% if (config.use_cdn && theme.info && theme.info.cdn && theme.info.cdn.css) { %>
-    <%- css(theme.info.cdn.css) %>
+  <% if (theme.use_cdn && theme.info.cdn && theme.info.cdn.css.first) { %>
+    <%- css(theme.info.cdn.css.first) %>
   <% } else { %>
-    <%- css('css/style.css') %>
+    <%- css('/css/first.css') %>
   <% } %>
 
-  <script>
-    function setLoadingBarProgress(num) {
-      document.getElementById('loading-bar').style.width=num+"%";
-    }
-  </script>
+  <% if (theme.use_cdn && theme.info.cdn && theme.info.cdn.css.style) { %>
+  <link rel="stylesheet" href="<%- theme.info.cdn.css.style %>" media="print" onload="this.media='all';this.onload=null">
+  <noscript><link rel="stylesheet" href="<%- theme.info.cdn.css.style %>"></noscript>
+  <% } else { %>
+  <link rel="stylesheet" href="<%- url_for("/css/style.css") %>" media="print" onload="this.media='all';this.onload=null">
+  <noscript><link rel="stylesheet" href="<%- url_for("/css/style.css") %>"></noscript>
+  <% } %>
 
-  <% if (config.google_analytics_key) { %>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<%- config.google_analytics_key %>"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '<%- config.google_analytics_key %>');
-    </script>
-  <% } %>
-  <% if (config.baidu_analytics_key) { %>
-    <!-- ba -->
-    <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?<%= config.baidu_analytics_key %>";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-    </script>
-  <% } %>
+  <script id="loadcss"></script>
+
+  <%- partial('../_third-party/end-of-support/script') %>
 </head>
