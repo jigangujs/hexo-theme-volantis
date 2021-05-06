@@ -6,12 +6,6 @@
 
 ## Getting Started
 
-<<<<<<< HEAD
-Docs: https://volantis.js.org
-
-
-This is a hexo theme forked from autour on 20200312
-=======
 Check your environment:
 
 ```yaml
@@ -64,4 +58,3 @@ Discuss with other users: https://github.com/volantis-x/hexo-theme-volantis/disc
 ![](https://i.loli.net/2020/03/18/ySw8zGHRBrDtUg7.png)
 
 ![](https://i.loli.net/2020/03/18/5QTMYsScOz41Vhg.png)
->>>>>>> 5fc7bcb8c15cad9d2dcb0f1790f071bb6191e471
